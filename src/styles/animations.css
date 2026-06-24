@@ -1,0 +1,298 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SocialNet — Animations & Micro-interactions
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(24px); }
+}
+
+@keyframes heartBeat {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.4); }
+  60%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+@keyframes ripple {
+  0%   { transform: scale(0); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.8); opacity: 0; }
+  60%  { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes notifPop {
+  0%   { transform: scale(0) translateY(-8px); opacity: 0; }
+  70%  { transform: scale(1.1) translateY(0); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Skeleton Loading ─────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    var(--bg-hover) 50%,
+    var(--bg-tertiary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-text { height: 14px; width: 100%; margin-bottom: 8px; }
+.skeleton-text-sm { height: 12px; width: 60%; }
+.skeleton-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
+.skeleton-image { width: 100%; height: 200px; border-radius: var(--radius-lg); }
+
+.post-card-skeleton {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+}
+.post-card-skeleton-header {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.post-card-skeleton-body { flex: 1; }
+
+/* ── Like Button Animation ────────────────────────────────────────────────── */
+.like-btn.animating svg {
+  animation: heartBeat 0.4s var(--transition-spring) forwards;
+}
+
+/* ── Ripple Effect ────────────────────────────────────────────────────────── */
+.ripple-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  margin-left: -20px;
+  pointer-events: none;
+  animation: ripple 0.6s ease-out forwards;
+}
+
+/* ── Post Card Enter Animation ─────────────────────────────────────────────── */
+.post-card {
+  animation: slideInUp 0.3s ease both;
+}
+
+.post-card:nth-child(1) { animation-delay: 0ms; }
+.post-card:nth-child(2) { animation-delay: 50ms; }
+.post-card:nth-child(3) { animation-delay: 100ms; }
+.post-card:nth-child(4) { animation-delay: 150ms; }
+.post-card:nth-child(5) { animation-delay: 200ms; }
+
+/* ── Notification Badge Pop ─────────────────────────────────────────────────── */
+.badge.pop {
+  animation: notifPop 0.4s var(--transition-spring) forwards;
+}
+
+/* ── Online Dot Pulse ───────────────────────────────────────────────────────── */
+.online-dot {
+  animation: none;
+}
+
+.online-dot::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+/* ── Sidebar Nav Item Slide ──────────────────────────────────────────────────── */
+.sidebar-nav-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-nav-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  border-radius: var(--radius-xl);
+}
+
+.sidebar-nav-item.active::before {
+  opacity: 0.08;
+}
+
+/* ── Composer focus animation ──────────────────────────────────────────────── */
+.post-composer {
+  transition: background var(--transition-base);
+}
+
+.post-composer:focus-within {
+  background: var(--bg-tertiary);
+}
+
+.composer-textarea:focus {
+  animation: none;
+}
+
+/* ── Trending item hover ───────────────────────────────────────────────────── */
+.trending-item {
+  position: relative;
+  overflow: hidden;
+}
+.trending-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: var(--gradient-primary);
+  transform: scaleY(0);
+  transition: transform var(--transition-base);
+}
+.trending-item:hover::after { transform: scaleY(1); }
+
+/* ── Auth hero animation ────────────────────────────────────────────────────── */
+.auth-hero-tagline {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* ── New post live indicator ────────────────────────────────────────────────── */
+.new-posts-banner {
+  background: var(--accent-blue);
+  color: white;
+  text-align: center;
+  padding: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  animation: slideInDown 0.3s ease;
+  border: none;
+  width: 100%;
+}
+.new-posts-banner:hover { background: var(--accent-blue-hover); }
+
+/* ── Floating action button ─────────────────────────────────────────────────── */
+.fab {
+  position: fixed;
+  bottom: var(--space-8);
+  right: var(--space-8);
+  width: 56px;
+  height: 56px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  border: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  transition: transform var(--transition-spring), box-shadow var(--transition-base);
+  z-index: var(--z-dropdown);
+  color: white;
+}
+.fab:hover { transform: scale(1.1); box-shadow: var(--shadow-xl), var(--shadow-glow); }
+
+@media (max-width: 600px) {
+  .fab { display: flex; }
+}
+
+/* ── Media preview animation ─────────────────────────────────────────────── */
+.composer-image-preview {
+  animation: popIn 0.3s ease;
+}
+
+/* ── Profile stats hover ─────────────────────────────────────────────────── */
+.profile-stat {
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.profile-stat:hover .profile-stat-value { color: var(--accent-blue); }
+
+/* ── Typing indicator ────────────────────────────────────────────────────── */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-3);
+}
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--text-muted);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── Page transition ─────────────────────────────────────────────────────── */
+.page-enter {
+  animation: fadeIn 0.25s ease;
+}
