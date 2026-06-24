@@ -16,10 +16,6 @@ export async function renderHomePage(container, navigate) {
   header.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;">
       <h2>Home</h2>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div style="width:8px;height:8px;background:var(--accent-green);border-radius:50%;animation:pulse 2s infinite;"></div>
-        <span style="font-size:13px;color:var(--text-secondary);">Live</span>
-      </div>
     </div>
   `;
   container.appendChild(header);

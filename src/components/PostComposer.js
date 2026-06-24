@@ -17,25 +17,26 @@ export function renderPostComposer(onPostCreated) {
            onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}'" />
       <div class="composer-body">
         <div class="composer-type-tabs">
-          <button class="composer-tab active" data-type="post" id="tab-post">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
-            Post
-          </button>
-          <button class="composer-tab" data-type="photo" id="tab-photo">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            Photo
-          </button>
-          <button class="composer-tab" data-type="video" id="tab-video">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-            Video
-          </button>
+          <div class="composer-tabs-list">
+            <button class="composer-tab active" data-type="post" id="tab-post">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+              Post
+            </button>
+            <button class="composer-tab" data-type="photo" id="tab-photo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Photo
+            </button>
+            <button class="composer-tab" data-type="video" id="tab-video">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+              Video
+            </button>
+          </div>
+          <select class="composer-privacy-select" id="composer-privacy">
+            <option value="public">🌍 Public</option>
+            <option value="friends">👥 Friends Only</option>
+            <option value="private">🔒 Private</option>
+          </select>
         </div>
-
-        <select class="composer-privacy-select" id="composer-privacy">
-          <option value="public">🌍 Public</option>
-          <option value="friends">👥 Friends Only</option>
-          <option value="private">🔒 Private</option>
-        </select>
 
         <textarea
           class="composer-textarea"
