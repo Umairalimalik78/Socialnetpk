@@ -2,13 +2,15 @@
 import { getCurrentUser, isLoggedIn } from '../store.js';
 import { api } from '../api.js';
 import { showToast } from './Toast.js';
+import { openModal, closeModal } from './Modal.js';
 
 const MAX_CHARS = 280;
 
-export function renderPostComposer(onPostCreated) {
+// Helper to render the full expanded composer inside the modal
+function renderFullComposer(onPostCreated, preselectTab = 'post') {
   const user = getCurrentUser();
   const el = document.createElement('div');
-  el.className = 'post-composer';
+  el.className = 'post-composer expanded';
   el.id = 'post-composer';
 
   el.innerHTML = `
@@ -18,15 +20,15 @@ export function renderPostComposer(onPostCreated) {
       <div class="composer-body">
         <div class="composer-type-tabs">
           <div class="composer-tabs-list">
-            <button class="composer-tab active" data-type="post" id="tab-post">
+            <button class="composer-tab ${preselectTab === 'post' ? 'active' : ''}" data-type="post" id="tab-post">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
               Post
             </button>
-            <button class="composer-tab" data-type="photo" id="tab-photo">
+            <button class="composer-tab ${preselectTab === 'photo' ? 'active' : ''}" data-type="photo" id="tab-photo">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
               Photo
             </button>
-            <button class="composer-tab" data-type="video" id="tab-video">
+            <button class="composer-tab ${preselectTab === 'video' ? 'active' : ''}" data-type="video" id="tab-video">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
               Video
             </button>
@@ -48,7 +50,7 @@ export function renderPostComposer(onPostCreated) {
         ></textarea>
 
         <div id="composer-image-preview" class="composer-image-preview" style="display:none;"></div>
-        <div id="composer-video-url-input" style="display:none;margin-top:8px;">
+        <div id="composer-video-url-input" style="${preselectTab === 'video' ? 'display:block;' : 'display:none;'}margin-top:8px;">
           <input class="input-field" id="video-url-input" placeholder="Paste video URL (YouTube, Vimeo...)" style="font-size:13px;" />
         </div>
 
@@ -71,13 +73,17 @@ export function renderPostComposer(onPostCreated) {
 
   // ── State ─────────────────────────────────────────────────────────────────
   let imageData = null;
-  let videoUrl = null;
 
   const textarea = el.querySelector('#post-composer-textarea');
   const submitBtn = el.querySelector('#compose-submit-btn');
   const charCount = el.querySelector('#char-count');
   const imagePreview = el.querySelector('#composer-image-preview');
   const fileInput = el.querySelector('#image-file-input');
+
+  // Trigger file input if photo tab was preselected
+  if (preselectTab === 'photo') {
+    setTimeout(() => fileInput.click(), 100);
+  }
 
   // Char count
   textarea.addEventListener('input', () => {
@@ -123,7 +129,7 @@ export function renderPostComposer(onPostCreated) {
     });
   });
 
-  // Emoji (simple picker)
+  // Emoji picker
   const EMOJIS = ['😀','😂','❤️','🔥','👍','🎉','😍','🙌','✨','💡','🚀','😎','🤔','😊','🎨','💪','🌟','🙏','😭','😅'];
   el.querySelector('#composer-emoji-btn').addEventListener('click', (e) => {
     e.stopPropagation();
@@ -169,15 +175,7 @@ export function renderPostComposer(onPostCreated) {
         privacy,
       });
 
-      // Reset composer
-      textarea.value = '';
-      imageData = null;
-      imagePreview.style.display = 'none';
-      fileInput.value = '';
-      charCount.textContent = `0 / ${MAX_CHARS}`;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Post';
-
+      closeModal();
       showToast('Post published! 🎉', 'success');
       if (onPostCreated) onPostCreated(post);
     } catch (err) {
@@ -185,6 +183,68 @@ export function renderPostComposer(onPostCreated) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Post';
     }
+  });
+
+  // Auto focus textarea when opened in modal
+  setTimeout(() => textarea.focus(), 150);
+
+  return el;
+}
+
+export function renderPostComposer(onPostCreated) {
+  const user = getCurrentUser();
+  const el = document.createElement('div');
+  el.className = 'fb-composer-compact';
+
+  const firstName = user?.displayName ? user.displayName.split(' ')[0] : 'User';
+
+  el.innerHTML = `
+    <img src="${user?.avatar}" alt="${user?.displayName}" class="avatar avatar-md"
+         onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}'" />
+    <button class="fb-composer-pill" id="fb-composer-pill-btn">
+      What's on your mind, ${firstName}?
+    </button>
+    <div class="fb-composer-actions">
+      <button class="fb-action-btn live" title="Live Video" id="fb-action-live">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f02849" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+      </button>
+      <button class="fb-action-btn photo" title="Photo/Video" id="fb-action-photo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#45bd62" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+      </button>
+      <button class="fb-action-btn activity" title="Reel" id="fb-action-activity">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f35369" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+      </button>
+    </div>
+  `;
+
+  // Click on pill opens expanded composer in modal
+  el.querySelector('#fb-composer-pill-btn').addEventListener('click', () => {
+    openModal({
+      title: 'Create Post',
+      content: renderFullComposer(onPostCreated, 'post'),
+    });
+  });
+
+  // Click on quick actions opens modal with preselected tab
+  el.querySelector('#fb-action-live').addEventListener('click', () => {
+    openModal({
+      title: 'Create Post',
+      content: renderFullComposer(onPostCreated, 'video'),
+    });
+  });
+
+  el.querySelector('#fb-action-photo').addEventListener('click', () => {
+    openModal({
+      title: 'Create Post',
+      content: renderFullComposer(onPostCreated, 'photo'),
+    });
+  });
+
+  el.querySelector('#fb-action-activity').addEventListener('click', () => {
+    openModal({
+      title: 'Create Post',
+      content: renderFullComposer(onPostCreated, 'video'),
+    });
   });
 
   return el;
