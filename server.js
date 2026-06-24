@@ -30,13 +30,15 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Dat
 setupWebSocket(wss);
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`\n🚀 SocialNet API Server running on http://localhost:${PORT}`);
-  console.log(`🔌 WebSocket server running on ws://localhost:${PORT}/ws`);
-  console.log(`\n📋 Demo Accounts (all password: "password"):`);
-  console.log(`   alex@socialnet.app | luna@socialnet.app | dev@socialnet.app`);
-  console.log(`   sophia@socialnet.app | tech@socialnet.app\n`);
-});
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 3001;
+  server.listen(PORT, () => {
+    console.log(`\n🚀 SocialNet API Server running on http://localhost:${PORT}`);
+    console.log(`🔌 WebSocket server running on ws://localhost:${PORT}/ws`);
+    console.log(`\n📋 Demo Accounts (all password: "password"):`);
+    console.log(`   alex@socialnet.app | luna@socialnet.app | dev@socialnet.app`);
+    console.log(`   sophia@socialnet.app | tech@socialnet.app\n`);
+  });
+}
 
 export default app;
